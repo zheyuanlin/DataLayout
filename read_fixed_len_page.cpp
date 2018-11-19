@@ -6,7 +6,7 @@
 #include "library.h"
 
 int main (int argc, const char *argv[]) {
-	if (argc < 3) {
+	if (argc != 3) {
 		std::cout << "Wrong parameters: $ read_fixed_len_page <page_file> <page_size>";
 		return 1;
 	}

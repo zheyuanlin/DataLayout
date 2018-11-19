@@ -6,7 +6,7 @@
 #include "library.h"
 
 int main(int argc, const char *argv[]) {
-	if (arg != 4) {
+	if (argc != 4) {
 		std::cout << "Please use $ write_fixed_len_pages <csv_file> <page_file> <page_size>";
 		return 1;
 	}
@@ -15,8 +15,8 @@ int main(int argc, const char *argv[]) {
 	int number_of_records = 0;
 	int number_of_pages = 0;
 
-	std::string csv_filename = string(argv[1]);
-	std::string page_filename = string(argv[2])
+	std::string csv_filename = argv[1];
+	std::string page_filename = argv[2];
 	int page_size = std::stoi(argv[3]);
 	std::ofstream page_file;
 	page_file.open(page_filename, std::ios::out | std::ios::binary);
@@ -69,7 +69,7 @@ int main(int argc, const char *argv[]) {
 		}
 	}
 
-	if (make_new_page = false) {
+	if (make_new_page == false) {
 		page_file.write((const char*) page.data, page.page_size);
 	}
 
@@ -80,7 +80,7 @@ int main(int argc, const char *argv[]) {
 
 	std::cout << "NUMBER OF RECORDS: " << number_of_records << "\n";
     std::cout << "NUMBER OF PAGES: " << number_of_pages << "\n";
-    std::cout << "TIME: " << stop_ms - start_ms << " milliseconds\n";
+    std::cout << "TIME: " << end_time_in_ms - now_in_ms << " milliseconds\n";
 
     return 0;
 
