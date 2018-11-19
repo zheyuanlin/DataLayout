@@ -19,14 +19,13 @@ def read_fixed_len_pages(page_file, page_size):
 
 def main():
     
-    if len(sys.argv) != 3:
-        print('wrong number of arguments')
+    if len(sys.argv) != 2:
+        print('only 1 argument, the page file')
         sys.exit(1)
 
     else:
 
         page_file = sys.argv[1]
-        page_size = sys.argv[2]
 
         page_sizes = [128, 512, 1024, 4096, 1024 * 8, 1024 * 64, 1024 * 256, 1024 ** 2, 2 * 1024 ** 2]
 
@@ -40,10 +39,10 @@ def main():
 
         for p_size in page_sizes:
             for i in range(50):
-                ms_elapsed = read_fixed_len_pages(page_file, p_size)
-                csvwriter.writerow({
+                time_taken = read_fixed_len_pages(page_file, p_size)
+                writer.writerow({
                     'page_size': p_size,
-                    'time (ms)': ms_elapsed,
+                    'time (ms)': time_taken,
                 })
 
 if __name__ == '__main__':
