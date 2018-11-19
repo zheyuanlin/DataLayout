@@ -1,6 +1,5 @@
 #include <iostream>
 #include "library.h"
-#include "library.cpp"
 
 int main(int argc, const char * argv[]) {
     Record record = 
