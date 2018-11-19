@@ -1,7 +1,7 @@
 all: library.o write_fixed_len_pages read_fixed_len_page experiment_2_3
 
 library.o: library.cpp
-	g++ library.cc -std=c++11 -g -Wall -c -o library.o
+	g++ library.cpp -std=c++11 -g -Wall -c -o library.o
 
 write_fixed_len_pages: write_fixed_len_pages.cpp library.o
 	g++ write_fixed_len_pages.cpp -std=c++11 -Wall -g -o write_fixed_len_pages library.o
