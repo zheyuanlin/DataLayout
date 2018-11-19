@@ -20,7 +20,7 @@ int main (int argc, const char *argv[]) {
 
 	// Make page file
 	std::ifstream page_file;
-	page_file.open(page_filename, std::ios::in | std::ios::binary);
+	page_file.open(filename, std::ios::in | std::ios::binary);
 
 	// Record output as in handout
 	int numRecords = 0;
