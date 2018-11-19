@@ -26,7 +26,7 @@ int main (int argc, const char *argv[]) {
 	int numRecords = 0;
 	int numPages = 0;
 
-	while (page_file.eof() == false) {
+	while (page_file.eof() == 0) {
 		Page curr_page;
 		// Init curr_page using a slot size of 1000
 		init_fixed_len_page(&curr_page, page_size, 1000);
@@ -38,17 +38,18 @@ int main (int argc, const char *argv[]) {
 			read_fixed_len_page(&curr_page, i, &record);
 			
 			// // Output to test file
-			// for (unsigned int j = 0; j < record.size(); j++) {
-			// 	std::cout << record.at(j);
+			for (unsigned int j = 0; j < record.size(); j++) {
+			 	std::cout << record.at(j);
 			// 	fputs(record.at(j), test_file);
-			// 	if (j != record.size() - 1) {
-			// 		std::cout << ",";
+			 	if (j != record.size() - 1) {
+			 		std::cout << ",";
 			// 		fputs(",", test_file);
-			// 	}
-			// }
+			 	}
+			 }
 			// fputs("\n", test_file);
 			numRecords += 1;
 		}
+		numPages += 1;
 	}
 
 	// Close file and stop time
