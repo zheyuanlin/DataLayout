@@ -4,6 +4,8 @@
 typedef const char* V;
 typedef std::vector<V> Record;
 
+const int SLOTSIZE = 5000;
+
 /**
  * Compute the number of bytes required to serialize record
  */

@@ -11,8 +11,6 @@
 #include "library.h"
 
 
-const int SLOTSIZE 1000;
-
 /**
  * Serialize the record to a byte array to be stored in buf.
  */
