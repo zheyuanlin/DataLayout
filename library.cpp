@@ -210,7 +210,7 @@ PageID alloc_page(Heapfile *heapfile) {
         // if no space, go to the next dir
         if (directory_with_free_space == -1) {
             page_id += fixed_len_page_capacity(&dir_page);
-            int fseek_check = fseek(heapfile->file_ptr, heapfile->page_size * fixed_len_page_capacity(&directory_page), SEEK_CUR);
+            int fseek_check = fseek(heapfile->file_ptr, heapfile->page_size * fixed_len_page_capacity(&dir_page), SEEK_CUR);
             if (fseek_check) {
                 perror("alloc page fseek");
                 exit(1);
@@ -233,7 +233,6 @@ PageID alloc_page(Heapfile *heapfile) {
     record.push_back(free_space.c_str());
     record.push_back(offset.c_str());
 
-    // Add record to directory_page for the new data_page we are allocating
     int wrote_slot = add_fixed_len_page(&dir_page, &record);
     if (wrote_slot != directory_with_free_space) {
     	perror("alloc_page: slot we wrote to isnt the same as dir with free space\n");
