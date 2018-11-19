@@ -29,10 +29,6 @@ def main():
 
         page_sizes = [128, 512, 1024, 4096, 1024 * 8, 1024 * 64, 1024 * 256, 1024 ** 2, 2 * 1024 ** 2]
 
-        if os.path.exists('./exp_results'):
-            shutil.rmtree('./exp_results')
-        os.mkdir('./exp_results')
-
         # write csv
         writer = csv.DictWriter(sys.stdout, fieldnames=('page_size', 'time (ms)'))
         writer.writeheader()
