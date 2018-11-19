@@ -11,7 +11,7 @@ int main (int argc, const char *argv[]) {
 		return 1;
 	}
 
-	std::string filename = string(argv[1]);
+	std::string filename = argv[1];
 	int page_size = std::stoi(argv[2]);
 
 	struct timeb t;
