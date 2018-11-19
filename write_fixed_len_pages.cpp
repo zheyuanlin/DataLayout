@@ -52,13 +52,15 @@ int main(int argc, const char *argv[]) {
 		number_of_records += 1;
 
 
-		// check if a new page is needed
+		// check if space is full
 		if (add_fixed_len_page(&page, &record) == -1) {
 			make_new_page = true;
 		}
 		else {
 			make_new_page = false;
 		}
+
+		std::cout<<add_fixed_len_page(&page, &record);
 
 		if (make_new_page == true) {
 			page_file.write((const char *) page.data, page.page_size);
