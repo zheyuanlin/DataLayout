@@ -16,6 +16,10 @@ Then,
 	I have included exp_files/ directory, which includes the test csv and page files I used.
 
 
+	The experiment write ups are in report.pdf
+
+	The results_3_2_read.csv and results_3_2_write.csv are the data I've used for my 3.2 experiment in report.pdf.
+
 
 
 
