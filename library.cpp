@@ -209,7 +209,7 @@ PageID alloc_page(Heapfile *heapfile) {
         directory_with_free_space = find_first_freeslot(&dir_page);
         // if no space, go to the next dir
         if (directory_with_free_space == -1) {
-            page_id += fixed_len_page_capacity(&directory_page);
+            page_id += fixed_len_page_capacity(&dir_page);
             int fseek_check = fseek(heapfile->file_ptr, heapfile->page_size * fixed_len_page_capacity(&directory_page), SEEK_CUR);
             if (fseek_check) {
                 perror("alloc page fseek");
@@ -240,7 +240,7 @@ PageID alloc_page(Heapfile *heapfile) {
     	exit(1);
     }
 
-    int fseek_check = fseek(heapfile->file_ptr, offset, SEEK_CUR);
+    int fseek_check = fseek(heapfile->file_ptr, (heapfile->page_size * directory_with_free_space), SEEK_CUR);
     int fwrite_check = fwrite((const char *) data_page.data, heapfile->page_size, 1, heapfile->file_ptr);
     if (fseek_check) {
         perror("alloc_page: fseek after wrote = data\n");
@@ -303,7 +303,7 @@ void write_page(Page *page, Heapfile *heapfile, PageID pid) {
     }
 
     int data_per_dir = fixed_len_page_capacity(&dir_page);
-    int heap_position = heap_position(heapfile, pid, data_per_dir);
+    int heap_position = get_heap_position(heapfile, pid, data_per_dir);
 
     int fseek_check = fseek(heapfile->file_ptr, heap_position, SEEK_SET);
     if (fseek_check) {
