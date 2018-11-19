@@ -21,7 +21,7 @@ def write_fixed_len_pages(csv_file, output_file, page_size):
 
 def main():
     
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print('only 2 arguments please, the csv file and the page file')
         sys.exit(1)
 
