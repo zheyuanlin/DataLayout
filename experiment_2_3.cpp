@@ -1,9 +1,10 @@
 #include <iostream>
 #include "library.h"
+#include "library.cpp"
 
 int main(int argc, const char * argv[]) {
     Record record = 
-    {
+        {"AAAAAAAAAA",
         "AAAAAAAAAA",
         "AAAAAAAAAA",
         "AAAAAAAAAA",
@@ -102,8 +103,7 @@ int main(int argc, const char * argv[]) {
         "AAAAAAAAAA",
         "AAAAAAAAAA",
         "AAAAAAAAAA",
-        "AAAAAAAAAA",
-        "AAAAAAAAAA"    };
+        "AAAAAAAAAA"};
 
     std::cout << fixed_len_sizeof(&record) << "\n";
     return 0;
