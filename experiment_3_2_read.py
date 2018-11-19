@@ -35,7 +35,7 @@ def main():
         os.mkdir('./read_3_2')
 
         # write csv
-        writer = csv.DictWriter(sys.stdout, fieldnames=('page_size', 'milliseconds_elapsed'), dialect='unix')
+        writer = csv.DictWriter(sys.stdout, fieldnames=('page_size', 'time (ms)'))
         writer.writeheader()
 
         for p_size in page_sizes:
@@ -43,7 +43,7 @@ def main():
                 ms_elapsed = read_fixed_len_pages(page_file, p_size)
                 csvwriter.writerow({
                     'page_size': p_size,
-                    'time taken (ms)': ms_elapsed,
+                    'time (ms)': ms_elapsed,
                 })
 
 if __name__ == '__main__':
