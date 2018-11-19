@@ -7,12 +7,12 @@ import subprocess
 import sys
 
 
-def write_fixed_len_pages(csv_file, output_file, page_size):
+def write_fixed_len_pages(csv_file, page_file, page_size):
     
     result = subprocess.run(
         [os.path.join(os.path.dirname(os.path.realpath(__file__)), './write_fixed_len_pages'),
             csv_file,
-            output_file,
+            page_file,
             str(page_size),
         ], stdout=subprocess.PIPE)
     
@@ -27,6 +27,7 @@ def main():
 
     else:
         csv_file = sys.argv[1]
+        page_file = sys.argv[2]
 
         page_sizes = [128, 512, 1024, 4096, 1024 * 8, 1024 * 64, 1024 * 256, 1024 ** 2, 2 * 1024 ** 2]
 
@@ -39,7 +40,7 @@ def main():
 
         for page_size in page_sizes:
             for i in range(50):
-                time_taken = write_fixed_len_pages(csv_file, output_file, page_size)
+                time_taken = write_fixed_len_pages(csv_file, page_file, page_size)
                 writer.writerow({'page_size': page_size, 'time (ms)': time_taken})
 
 if __name__ == '__main__':
