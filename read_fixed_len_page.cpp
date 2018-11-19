@@ -32,6 +32,8 @@ int main (int argc, const char *argv[]) {
 		init_fixed_len_page(&curr_page, page_size, 1000);
 		// Read page_file data into data field of curr_page
 		page_file.read((char *)curr_page.data, page_size);
+
+		std::cout << fixed_len_page_capacity(&curr_page);
 		
 		for (int i = 0; i < fixed_len_page_capacity(&curr_page); i++) {
 			Record record;
