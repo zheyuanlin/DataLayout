@@ -40,14 +40,14 @@ int main (int argc, const char *argv[]) {
 			read_fixed_len_page(&curr_page, i, &record);
 			
 			// // Output to test file
-			for (unsigned int j = 0; j < record.size(); j++) {
-			 	std::cout << record.at(j);
+			//for (unsigned int j = 0; j < record.size(); j++) {
+			 	//std::cout << record.at(j);
 			// 	fputs(record.at(j), test_file);
-			 	if (j != record.size() - 1) {
-			 		std::cout << ",";
+			// 	if (j != record.size() - 1) {
+			// 		std::cout << ",";
 			// 		fputs(",", test_file);
-			 	}
-			 }
+			 	//}
+			// }
 			// fputs("\n", test_file);
 			numRecords += 1;
 		}
