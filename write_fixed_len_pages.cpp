@@ -60,7 +60,7 @@ int main(int argc, const char *argv[]) {
 			make_new_page = false;
 		}
 
-		std::cout<<add_fixed_len_page(&page, &record);
+		//std::cout<<add_fixed_len_page(&page, &record);
 
 		if (make_new_page == true) {
 			page_file.write((const char *) page.data, page.page_size);

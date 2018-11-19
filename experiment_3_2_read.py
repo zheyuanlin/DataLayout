@@ -34,7 +34,7 @@ def main():
         writer.writeheader()
 
         for p_size in page_sizes:
-            for i in range(50):
+            for i in range(5):
                 time_taken = read_fixed_len_pages(page_file, p_size)
                 writer.writerow({
                     'page_size': p_size,
