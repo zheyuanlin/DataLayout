@@ -11,7 +11,7 @@
 #include "library.h"
 
 
-#define SLOTSIZE 1000;
+const int SLOTSIZE 1000;
 
 /**
  * Serialize the record to a byte array to be stored in buf.
@@ -86,7 +86,7 @@ void init_fixed_len_page(Page *page, int page_size, int slot_size) {
  * Calculates the maximal number of records that fit in a page
  */
 int fixed_len_page_capacity(Page *page) {
-    return (page->page_size / page->slot_size) - std::ceil(page->size_of_directory / page->slot_size);
+    return (page->page_size / page->slot_size) - std::ceil(page->dir_size / page->slot_size);
 }
  
 /**
@@ -99,7 +99,7 @@ int fixed_len_page_freeslots(Page *page) {
 	int j = 0;
 	while  (i < page->dir_size) {
 		while (j < 8) {
-			if (((directory[i] >> j) & 1) == 0) {
+			if (((dir[i] >> j) & 1) == 0) {
 				ctr += 1;
 			}
 			j += 1;
@@ -114,12 +114,12 @@ int fixed_len_page_freeslots(Page *page) {
  * Find first free space, same as fixed_len_page_freeslots but returns early.
  */
 int find_first_freeslot(Page *page) {
-	uint8_t dir = page->page_size - page->dir_size + ((uint8_t *) page->data);
+	uint8_t *dir = page->page_size - page->dir_size + ((uint8_t *) page->data);
 	int i = 0;
 	int j = 0;
 	while  (i < page->dir_size) {
 		while (j < 8) {
-			if (((directory[i] >> j) & 1) == 0) {
+			if (((dir[i] >> j) & 1) == 0) {
 				return (8 * i) + j;
 			}
 			j += 1;
@@ -138,9 +138,9 @@ int find_first_freeslot(Page *page) {
 int add_fixed_len_page(Page *page, Record *r) {
 	if (fixed_len_page_freeslots(page) != 0) {
 		int free_space = find_first_freeslot(page);
-		uint8_t *dirent = ((uint8_t *) page->data) + page->page_size - (first_free_slot / 8) - 1;
+		uint8_t *dirent = ((uint8_t *) page->data) + page->page_size - (free_space / 8) - 1;
     	*dirent = *dirent | (1 << (free_space % 8));
-    	write_fixed_len_page(page, free_space, record);
+    	write_fixed_len_page(page, free_space, r);
     	return free_space;
 	}
 	else {
@@ -202,7 +202,7 @@ PageID alloc_page(Heapfile *heapfile) {
 	while (!feof(heapfile->file_ptr) && directory_with_free_space == -1) {
 		init_fixed_len_page(&dir_page, heapfile->page_size, SLOTSIZE);
 		
-		int fread_check = fread(dir_page.data, heapfile->page_size, 1, heapfile->file_ptr) 
+		int fread_check = fread(dir_page.data, heapfile->page_size, 1, heapfile->file_ptr); 
 		if (fread_check <= 0 && ferror(heapfile->file_ptr) != 0) {
             perror("fread in alloc_page\n");
             exit(1);
@@ -211,9 +211,9 @@ PageID alloc_page(Heapfile *heapfile) {
         directory_with_free_space = find_first_freeslot(&dir_page);
         // if no space, go to the next dir
         if (directory_with_free_space == -1) {
-            page_id += page_capacity;
-            int fseek_check = fseek(heapfile->file_ptr, heapfile->page_size * page_capacity, SEEK_CUR);
-            if (fseek) {
+            page_id += fixed_len_page_capacity(&directory_page);
+            int fseek_check = fseek(heapfile->file_ptr, heapfile->page_size * fixed_len_page_capacity(&directory_page), SEEK_CUR);
+            if (fseek_check) {
                 perror("alloc page fseek");
                 exit(1);
             }
@@ -221,8 +221,8 @@ PageID alloc_page(Heapfile *heapfile) {
     }
 
     // no dir available
-    if (directory_free_slot == -1) {
-        append_empty_directory(heapfile);
+    if (directory_with_free_space == -1) {
+        add_empty_dir(heapfile);
     }
 
     Page data_page;
@@ -232,7 +232,7 @@ PageID alloc_page(Heapfile *heapfile) {
     Record record;
     std::string free_space = std::to_string(fixed_len_page_capacity(&dir_page));
     std::string offset = std::to_string(heapfile->page_size * directory_with_free_space);
-    record.push_back(freespace.c_str());
+    record.push_back(free_space.c_str());
     record.push_back(offset.c_str());
 
     // Add record to directory_page for the new data_page we are allocating
@@ -242,7 +242,7 @@ PageID alloc_page(Heapfile *heapfile) {
     	exit(1);
     }
 
-    fseek_check = fseek(heapfile->file_ptr, offset, SEEK_CUR);
+    int fseek_check = fseek(heapfile->file_ptr, offset, SEEK_CUR);
     int fwrite_check = fwrite((const char *) data_page.data, heapfile->page_size, 1, heapfile->file_ptr);
     if (fseek_check) {
         perror("alloc_page: fseek after wrote = data\n");
@@ -258,7 +258,7 @@ PageID alloc_page(Heapfile *heapfile) {
     return page_id;
 }
 
-int heap_position(Heapfile *heapfile, PageID pid, int data_per_dir){
+int get_heap_position(Heapfile *heapfile, PageID pid, int data_per_dir){
     return ((((pid / data_per_dir) + 1) + pid) * heapfile->page_size);
 }
 
@@ -267,7 +267,7 @@ int heap_position(Heapfile *heapfile, PageID pid, int data_per_dir){
  */
 void read_page(Heapfile *heapfile, PageID pid, Page *page) {
 	Page dir_page;
-	init_fixed_len_page(&dirpage, heapfile->page_size, SLOTSIZE);
+	init_fixed_len_page(&dir_page, heapfile->page_size, SLOTSIZE);
     int fread_check = fread(dir_page.data, heapfile->page_size, 1, heapfile->file_ptr);
     if (fread_check <= 0) {
     	perror("read_page: fread error\n");
@@ -275,7 +275,7 @@ void read_page(Heapfile *heapfile, PageID pid, Page *page) {
     }
 
     int data_per_dir = fixed_len_page_capacity(&dir_page);
-    int heap_position = heap_position(heapfile, pid, data_per_dir);
+    int heap_position = get_heap_position(heapfile, pid, data_per_dir);
 
     init_fixed_len_page(page, heapfile->page_size, SLOTSIZE);
     int fseek_check = fseek(heapfile->file_ptr, heap_position, SEEK_SET);
