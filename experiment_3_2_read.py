@@ -10,7 +10,7 @@ import shutil
 
 def read_fixed_len_pages(page_file, page_size):
     result = subprocess.run(
-        [os.path.join(os.path.dirname(os.path.realpath(__file__)), './read_fixed_len_pages'),
+        [os.path.join(os.path.dirname(os.path.realpath(__file__)), './read_fixed_len_page'),
             page_file,
             str(page_size)], stdout=subprocess.PIPE)
     
